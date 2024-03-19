@@ -1372,6 +1372,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afe55687bc76ec745801e395e2b24f15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chestType: 2
   animator: {fileID: 6491913701516345902}
 --- !u!1001 &676232074
 PrefabInstance:
@@ -2373,6 +2374,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afe55687bc76ec745801e395e2b24f15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chestType: 0
   animator: {fileID: 6491913701707544840}
 --- !u!1 &1322579541
 GameObject:
@@ -3782,6 +3784,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afe55687bc76ec745801e395e2b24f15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chestType: 0
   animator: {fileID: 6491913700987384211}
 --- !u!212 &150802953268865269
 SpriteRenderer:
@@ -8116,6 +8119,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afe55687bc76ec745801e395e2b24f15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chestType: 1
   animator: {fileID: 6491913701438405644}
 --- !u!212 &8880890978940214816
 SpriteRenderer:

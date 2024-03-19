@@ -19,7 +19,7 @@ public class Villager : MonoBehaviour
     Vector2 movement;
     float speed = 3;
 
-    void Start()
+	void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
@@ -86,5 +86,9 @@ public class Villager : MonoBehaviour
     public virtual void Attack()
     {
         animator.SetTrigger("Attack");
+    }
+
+    public virtual Chest.ChestType CanOpen() {
+        return Chest.ChestType.Villager;
     }
 }
