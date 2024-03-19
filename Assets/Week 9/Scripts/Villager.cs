@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -12,7 +13,9 @@ public class Villager : MonoBehaviour
     bool isSelected;
     public GameObject highlight;
 
-    Vector2 destination;
+	[System.NonSerialized]
+	public Vector2 destination;
+
     Vector2 movement;
     float speed = 3;
 
@@ -76,11 +79,11 @@ public class Villager : MonoBehaviour
         //right click to attack
         if (Input.GetMouseButtonDown(1) && isSelected)
         {
-            Attack();
+            this.Attack();
         }
     }
 
-    void Attack()
+    public virtual void Attack()
     {
         animator.SetTrigger("Attack");
     }
