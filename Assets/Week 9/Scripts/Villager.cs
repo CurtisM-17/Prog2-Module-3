@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class Villager : MonoBehaviour
 {
@@ -17,16 +18,17 @@ public class Villager : MonoBehaviour
     protected float speed = 3;
     protected float defaultSpeed;
 
+    RectTransform nameDisplay;
+
     void Start()
     {
+        nameDisplay = transform.Find("NameDisplay").GetComponent<RectTransform>();
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         destination = transform.position;
         Selected(false);
 
         defaultSpeed = speed;
-
-        Debug.Log(animator);
     }
     public void Selected(bool value)
     {
@@ -34,6 +36,7 @@ public class Villager : MonoBehaviour
         highlight.SetActive(isSelected);
     }
 
+    /*
     private void OnMouseDown()
     {
         CharacterControl.SetSelectedVillager(this);
@@ -44,6 +47,7 @@ public class Villager : MonoBehaviour
     {
         clickingOnSelf = false;
     }
+    */
 
     private void FixedUpdate()
     {
@@ -52,12 +56,14 @@ public class Villager : MonoBehaviour
         //flip the x direction of the game object & children to face the direction we're walking
         if(movement.x > 0)
         {
-            transform.localScale = new Vector3(-1, 1, 1);
+            transform.localScale = new(-1, 1, 1);
+            nameDisplay.localScale = new(-1, 1, 1);
         }
         else if (movement.x < 0)
         {
             transform.localScale = new Vector3(1, 1, 1);
-        }
+			nameDisplay.localScale = new(1, 1, 1);
+		}
 
         //stop moving if we're close enough to the target
         if (movement.magnitude < 0.1)
@@ -72,7 +78,7 @@ public class Villager : MonoBehaviour
     void Update()
     {
         //left click: move to the click location
-        if (Input.GetMouseButtonDown(0) && isSelected && !clickingOnSelf)
+        if (Input.GetMouseButtonDown(0) && isSelected && !clickingOnSelf && !EventSystem.current.IsPointerOverGameObject())
         {
             destination = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         }
