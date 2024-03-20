@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -13,18 +12,21 @@ public class Villager : MonoBehaviour
     bool isSelected;
     public GameObject highlight;
 
-	[System.NonSerialized]
-	public Vector2 destination;
-
+    protected Vector2 destination;
     Vector2 movement;
-    float speed = 3;
+    protected float speed = 3;
+    protected float defaultSpeed;
 
-	void Start()
+    void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         destination = transform.position;
         Selected(false);
+
+        defaultSpeed = speed;
+
+        Debug.Log(animator);
     }
     public void Selected(bool value)
     {
@@ -61,6 +63,7 @@ public class Villager : MonoBehaviour
         if (movement.magnitude < 0.1)
         {
             movement = Vector2.zero;
+            speed = 3;
         }
 
         rb.MovePosition(rb.position + movement.normalized * speed * Time.deltaTime);
@@ -79,16 +82,17 @@ public class Villager : MonoBehaviour
         //right click to attack
         if (Input.GetMouseButtonDown(1) && isSelected)
         {
-            this.Attack();
+            Attack();
         }
     }
 
-    public virtual void Attack()
+    protected virtual void Attack()
     {
         animator.SetTrigger("Attack");
     }
 
-    public virtual Chest.ChestType CanOpen() {
-        return Chest.ChestType.Villager;
+    public virtual ChestType CanOpen()
+    {
+        return ChestType.Villager;
     }
 }
