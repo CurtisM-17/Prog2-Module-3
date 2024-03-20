@@ -12,12 +12,8 @@ public class Thief : Villager
 
     public float dashSpeed = 7f;
 
-    bool isDashing = false;
-
 	protected override void Attack()
     {
-        //if (isDashing) return;
-
         //dash towards mouse
         destination = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
@@ -31,8 +27,6 @@ public class Thief : Villager
 
     IEnumerator Dash()
     {
-        //isDashing = true;
-
         speed = dashSpeed;
 
         while (speed > defaultSpeed)
@@ -47,10 +41,6 @@ public class Thief : Villager
 		Instantiate(knifePrefab, spawnPoint2.position, spawnPoint2.rotation);
 
 		speed = defaultSpeed;
-
-		yield return new WaitForSeconds(0.5f);
-		//isDashing = false;
-
     }
 
     public override ChestType CanOpen()
