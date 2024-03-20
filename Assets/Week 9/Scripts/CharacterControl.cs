@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CharacterControl : MonoBehaviour
 {
@@ -29,7 +30,13 @@ public class CharacterControl : MonoBehaviour
             return;
         }
 
-        SetSelectedVillager(villagers[index-1]);
+		SetSelectedVillager(villagers[index-1]);
+    }
+
+    public void ScaleSlider(Single value) {
+        if (!SelectedVillager) return;
+
+        SelectedVillager.SetScale(value);
     }
 
     private void Update()

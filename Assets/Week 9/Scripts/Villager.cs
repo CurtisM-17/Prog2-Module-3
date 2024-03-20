@@ -18,6 +18,8 @@ public class Villager : MonoBehaviour
     protected float speed = 3;
     protected float defaultSpeed;
 
+    Vector2 intendedScale = new(1, 1);
+
     RectTransform nameDisplay;
 
     void Start()
@@ -49,25 +51,29 @@ public class Villager : MonoBehaviour
     }
     */
 
-    private void FixedUpdate()
-    {
+    public void SetScale(float value) {
+		intendedScale = new(value, value);
+
+        if (movement.x == 0) { // Set when not moving
+            if (transform.localScale.x < 0) transform.localScale = new(-value, value);
+            else transform.localScale = new(value, value);
+        }
+    }
+
+    private void FixedUpdate() {
         movement = destination - (Vector2)transform.position;
 
         //flip the x direction of the game object & children to face the direction we're walking
-        if(movement.x > 0)
-        {
-            transform.localScale = new(-1, 1, 1);
-            nameDisplay.localScale = new(-1, 1, 1);
+        if (movement.x > 0) {
+            transform.localScale = new(-intendedScale.x, intendedScale.y);
+            nameDisplay.localScale = new(-1, 1);
+        } else if (movement.x < 0) {
+            transform.localScale = new(intendedScale.x, intendedScale.y);
+            nameDisplay.localScale = new(1, 1);
         }
-        else if (movement.x < 0)
-        {
-            transform.localScale = new Vector3(1, 1, 1);
-			nameDisplay.localScale = new(1, 1, 1);
-		}
 
         //stop moving if we're close enough to the target
-        if (movement.magnitude < 0.1)
-        {
+        if (movement.magnitude < 0.1) {
             movement = Vector2.zero;
             speed = 3;
         }
