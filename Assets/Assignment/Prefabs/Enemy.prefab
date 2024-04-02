@@ -53,6 +53,7 @@ MonoBehaviour:
   moveSpeed: 0.5
   fireRate: 1
   bulletPrefab: {fileID: 3493696516333091304, guid: dc06097a71fce8c42ad8469512bb46af, type: 3}
+  maxAttackDistance: 6
 --- !u!58 &7865637312842034364
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -436,7 +437,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1103890057262881933
 Transform:
   m_ObjectHideFlags: 0

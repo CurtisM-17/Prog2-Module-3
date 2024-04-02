@@ -11,8 +11,9 @@ public class EnemyBehaviour : MonoBehaviour
 	public Slider healthSlider;
 	float timer = 0;
 
-	public static GameObject[] towers; // Gets set by enemy spawner
+	public static TowerSelections[] towers; // Gets set by enemy spawner
 	public static Transform[] pathPoints; // Set by enemy spawner
+	public static GameObject mainTower; // ^^^
 	int currentGoalPoint = 1;
 
 	public float moveSpeed = 1f;
@@ -31,11 +32,13 @@ public class EnemyBehaviour : MonoBehaviour
 	private void Update() {
 		timer += Time.deltaTime;
 
-		if (health <= 0 || reachedEnd) {
-			direction = Vector2.zero;
-		} else CalculateDirection();
+		if (health <= 0 || reachedEnd) direction = Vector2.zero;
 
-		if (health > 0) AttackNearestTower(); // Can still fire if reached end
+		if (health > 0) {
+			// Can still fire if reached end
+			AttackNearestTower();
+			CalculateDirection();
+		}
 	}
 
 	/// Attacking
@@ -43,54 +46,66 @@ public class EnemyBehaviour : MonoBehaviour
 	public GameObject bulletPrefab;
 	float lastBulletFire;
 
+	public float maxAttackDistance = 3f;
+
 	void AttackNearestTower() {
-		GameObject nearestTower = null;
-		float nearestDist = 0;
-
-		if (!reachedEnd) {
-			// Determine which tower is closest to this enemy
-			foreach (GameObject tower in towers) {
-				float dist = (tower.transform.position - transform.position).magnitude;
-
-				if (nearestTower == null) {
-					nearestTower = tower;
-					nearestDist = dist;
-					continue;
-				}
-
-				float distDifference = Mathf.Abs(dist - nearestDist);
-
-				//if (distDifference < 1) Debug.Log(distDifference + " | " + Random.Range(0, 2));
-
-				if (dist < nearestDist) {
-					if (distDifference <= 0.5f && Random.Range(0, 2) == 0) continue; // Choose between one randomly if the difference is minimal
-
-					nearestTower = tower;
-					nearestDist = dist;
-				}
-			}
-		} else nearestTower = towers.Last(); // Only the main tower if at the end
-
-		// Target acquired. Attack it
-		BulletFire(nearestTower);
-    }
-
-	/// Bullet firing
-	void BulletFire(GameObject target) {
 		if (timer < 1) return; // Too early
 
 		if (timer - lastBulletFire >= fireRate) {
+			GameObject nearestTower = null;
+			float nearestDist = 0;
+
+			if (!reachedEnd) {
+				// Determine which tower is closest to this enemy
+				foreach (TowerSelections towerSelection in towers) {
+					if (towerSelection.towerInPlace == null) continue;
+
+					GameObject tower = towerSelection.gameObject;
+
+					float dist = (tower.transform.position - transform.position).magnitude;
+
+					if (nearestTower == null) {
+						nearestTower = tower;
+						nearestDist = dist;
+						continue;
+					}
+
+					float distDifference = Mathf.Abs(dist - nearestDist);
+
+					if (dist < nearestDist) {
+						if (distDifference <= 0.5f && Random.Range(0, 2) == 0) continue; // Choose between one randomly if the difference is minimal
+
+						nearestTower = tower;
+						nearestDist = dist;
+					}
+				}
+			} else {
+				nearestTower = mainTower; // Only the main tower if at the end
+			}
+
+			if (!nearestTower) nearestTower = mainTower; // Target is the main tower if there are no defences
+
+			// Don't attack if too far away
+			Vector3 difference = nearestTower.transform.position - transform.position;
+
+			if (difference.magnitude > maxAttackDistance) return; // Too far
+
+			// Attack
 			lastBulletFire = timer;
 
-			Vector3 aimDir = target.transform.position - transform.position;
-			float angle = (Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg);
+			float angle = (Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg);
 
-			Instantiate(bulletPrefab, transform.position, Quaternion.Euler(0, 0, angle-90));
+			Instantiate(bulletPrefab, transform.position, Quaternion.Euler(0, 0, angle - 90));
 		}
 	}
 
 	/// Movement
 	void CalculateDirection() {
+		if (reachedEnd) {
+			rb.rotation = 0;
+			return;
+		}
+
 		direction = pathPoints[currentGoalPoint].position - transform.position;
 
 		// Face point
@@ -118,7 +133,7 @@ public class EnemyBehaviour : MonoBehaviour
 
 	/// Health
 	public void IncrementHealth(int increment) {
-		health = increment;
+		health += increment;
 		if (health < 0) {
 			health = 0;
 			Die();
@@ -128,6 +143,8 @@ public class EnemyBehaviour : MonoBehaviour
 	}
 
 	void Die() {
+		EnemySpawner.enemies.Remove(gameObject);
+
 		Destroy(gameObject, 1);
 	}
 }

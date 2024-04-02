@@ -8,6 +8,9 @@ public class Bullets : MonoBehaviour
 	public float speed = 1f;
 	public float hitDeleteDelay = 0.25f;
 
+	public float regularTowerDmg = 1f;
+	public float mainTowerDmg = 0.5f;
+
 	Rigidbody2D rb;
 
 	private void Start() {
@@ -21,9 +24,20 @@ public class Bullets : MonoBehaviour
 	}
 
 	private void OnTriggerEnter2D(Collider2D collision) {
-		if (damagesTowers && !collision.gameObject.CompareTag("Tower")) return; // Tower mode
+		if (damagesTowers && collision.gameObject.layer != 3) return; // Tower mode
 		else if (!damagesTowers && !collision.gameObject.CompareTag("Enemy")) return; // Enemy mode
 
 		Destroy(gameObject, hitDeleteDelay);
+
+		if (collision.CompareTag("MainTower")) {
+			collision.gameObject.GetComponent<Towers>().IncrementHealth(-mainTowerDmg);
+
+			return;
+		};
+
+		Towers tower = collision.gameObject.GetComponent<TowerSelections>().towerInPlace;
+		if (!tower) return; // Empty plot
+
+		tower.IncrementHealth(-regularTowerDmg);
 	}
 }
