@@ -11,6 +11,9 @@ public class Bullets : MonoBehaviour
 	public float regularTowerDmg = 1f;
 	public float mainTowerDmg = 0.5f;
 
+	[System.NonSerialized] public float enemyDamage; // Set by tower script
+	public int enemyKillReward = 5;
+
 	Rigidbody2D rb;
 
 	private void Start() {
@@ -29,15 +32,23 @@ public class Bullets : MonoBehaviour
 
 		Destroy(gameObject, hitDeleteDelay);
 
-		if (collision.CompareTag("MainTower")) {
+		if (collision.gameObject.CompareTag("MainTower")) {
+			// Main tower
 			collision.gameObject.GetComponent<Towers>().IncrementHealth(-mainTowerDmg);
+		} else if (collision.gameObject.CompareTag("Tower")) {
+			// Regular tower
+			Towers tower = collision.gameObject.GetComponent<TowerSelections>().towerInPlace;
+			if (!tower) return; // Empty plot
 
-			return;
-		};
+			tower.IncrementHealth(-regularTowerDmg);
+		} else if (collision.gameObject.CompareTag("Enemy")) {
+			// Enemies
+			EnemyBehaviour e = collision.gameObject.GetComponent<EnemyBehaviour>();
+			e.IncrementHealth(-Random.Range(enemyDamage-(enemyDamage*0.2f), enemyDamage + (enemyDamage * 0.2f))); // Slightly randomized damage
 
-		Towers tower = collision.gameObject.GetComponent<TowerSelections>().towerInPlace;
-		if (!tower) return; // Empty plot
-
-		tower.IncrementHealth(-regularTowerDmg);
+			if (e.health <= 0) {
+				TowerUpgrades.IncrementCash(enemyKillReward);
+			}
+		}
 	}
 }

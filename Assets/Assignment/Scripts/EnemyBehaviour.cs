@@ -7,7 +7,7 @@ using static UnityEngine.GraphicsBuffer;
 
 public class EnemyBehaviour : MonoBehaviour
 {
-	public int health = 100;
+	public float health = 100;
 	public Slider healthSlider;
 	float timer = 0;
 
@@ -20,11 +20,14 @@ public class EnemyBehaviour : MonoBehaviour
 	bool reachedEnd = false;
 
 	Rigidbody2D rb;
+	GameObject bulletContainer;
 
 	private void Start() {
 		rb = GetComponent<Rigidbody2D>();
 
 		transform.position = pathPoints[0].transform.position;
+
+		bulletContainer = GameObject.FindGameObjectWithTag("BulletContainer");
 	}
 
 	Vector2 direction;
@@ -93,9 +96,12 @@ public class EnemyBehaviour : MonoBehaviour
 			// Attack
 			lastBulletFire = timer;
 
+			GameObject bullet = Instantiate(bulletPrefab, bulletContainer.transform);
+
 			float angle = (Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg);
 
-			Instantiate(bulletPrefab, transform.position, Quaternion.Euler(0, 0, angle - 90));
+			bullet.transform.position = transform.position;
+			bullet.transform.eulerAngles = new Vector3(0, 0, angle - 90);
 		}
 	}
 
@@ -132,9 +138,9 @@ public class EnemyBehaviour : MonoBehaviour
 	}
 
 	/// Health
-	public void IncrementHealth(int increment) {
+	public void IncrementHealth(float increment) {
 		health += increment;
-		if (health < 0) {
+		if (health <= 5) {
 			health = 0;
 			Die();
 		}
@@ -143,7 +149,7 @@ public class EnemyBehaviour : MonoBehaviour
 	}
 
 	void Die() {
-		EnemySpawner.enemies.Remove(gameObject);
+		EnemySpawner.enemies.Remove(this);
 
 		Destroy(gameObject, 1);
 	}

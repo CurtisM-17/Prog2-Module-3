@@ -12,10 +12,12 @@ public class EnemySpawner : MonoBehaviour
 	public Transform[] pathPoints;
 	public GameObject enemyPrefab;
 
-	public static List<GameObject> enemies = new();
+	public static List<EnemyBehaviour> enemies = new();
 
 	public float minSpawnInterval, maxSpawnInterval;
 	float currentInterval;
+
+	GameObject enemyContainer;
 
 	private void Start() {
 		EnemyBehaviour.pathPoints = pathPoints;
@@ -30,19 +32,21 @@ public class EnemySpawner : MonoBehaviour
 
 		EnemyBehaviour.towers = selectionScripts.ToArray();
 
+		enemyContainer = GameObject.FindGameObjectWithTag("EnemyContainer");
+
 		// Spawn the first enemy instantly
         StartCoroutine(SpawnEnemyWhenTime());
 	}
 
 	static void LogEnemy(GameObject enemy) {
-		enemies.Add(enemy);
+		enemies.Add(enemy.GetComponent<EnemyBehaviour>());
 	}
 
 	IEnumerator SpawnEnemyWhenTime() {
 		yield return new WaitForSeconds(currentInterval);
 
 		// Spawn enemy
-		GameObject enemy = Instantiate(enemyPrefab);
+		GameObject enemy = Instantiate(enemyPrefab, enemyContainer.transform);
 		if (enemy != null) LogEnemy(enemy);
 
 		// New interval & coroutine

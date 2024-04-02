@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7915146725360662513}
   - component: {fileID: 140094871417749954}
   m_Layer: 0
-  m_Name: Enemy Bullet
+  m_Name: Tower Bullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,12 +47,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4afd72a1ca3f9e4409d4b0ae52b86844, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damagesTowers: 1
-  speed: 2.5
-  hitDeleteDelay: 0.25
-  regularTowerDmg: 2.5
-  mainTowerDmg: 1.25
-  enemyKillReward: 5
+  damagesTowers: 0
+  speed: 5
+  hitDeleteDelay: 0
+  regularTowerDmg: 0
+  mainTowerDmg: 0
+  enemyKillReward: 2
 --- !u!212 &5083786075145563665
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -95,7 +95,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 500
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.6509434, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.035294056, g: 0, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

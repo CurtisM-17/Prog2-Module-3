@@ -24,8 +24,4 @@ public class MainTower : Towers
 	protected override void Die() {
 		SceneManager.LoadScene(1);
 	}
-
-	public override string GetTowerType() {
-		return "Main Tower";
-	}
 }
